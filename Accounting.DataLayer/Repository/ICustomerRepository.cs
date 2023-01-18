@@ -9,7 +9,9 @@ namespace Accounting.DataLayer.Repository {
 
         List<Customers> GetAllCustomers();
         Customers GetCustomerById(int customerId);
-        
+
+        IEnumerable<Customers> getCustomerByFilter(string filter);
+
         bool InsertCustomer(Customers customer);
 
         bool UpdateCustomer(Customers customer);
@@ -18,10 +20,6 @@ namespace Accounting.DataLayer.Repository {
 
         bool DeleteCustomer(Customers customer);
 
-        /// <summary>
-        /// When ever I do any action in my program I call this methode
-        /// to save it with using lambada expression
-        /// </summary>
-        void save();
+
     }
 }

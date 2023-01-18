@@ -11,12 +11,12 @@ namespace Accounting.DataLayer.Services {
 
         private Accounting_DBEntities db;
 
-        public CustomerRepository (Accounting_DBEntities context) {
+        public CustomerRepository(Accounting_DBEntities context) {
             this.db = context;
         }
 
         public bool DeleteCustomer(int customerId) {
-            
+
             try {
                 var customer = GetCustomerById(customerId);
                 DeleteCustomer(customer);
@@ -39,6 +39,10 @@ namespace Accounting.DataLayer.Services {
             return db.Customers.ToList();
         }
 
+        public IEnumerable<Customers> getCustomerByFilter(string filter) {
+            return db.Customers.Where(c => c.FullName.Contains(filter) || c.Email.Contains(filter) || c.Mobile.Contains(filter)).ToList();
+        }
+
         public Customers GetCustomerById(int customerId) {
             return db.Customers.Find(customerId);
         }
@@ -52,17 +56,17 @@ namespace Accounting.DataLayer.Services {
             }
         }
 
-        public void save() {
-            db.SaveChanges();
-        }
+
 
         public bool UpdateCustomer(Customers customer) {
-            try {
-                db.Entry(customer).State = EntityState.Modified;
-                return true;
-            } catch {
-                return false;
+            //try {
+            var local = db.Set<Customers>().Local
+                .FirstOrDefault(f => f.CustomerID == customer.CustomerID);
+            if (local != null) {
+                db.Entry(local).State = EntityState.Detached;
             }
+            db.Entry(customer).State = EntityState.Modified;
+            return true;
         }
     }
 }
